@@ -1,0 +1,49 @@
+spring:
+  # Configuração do Banco de Dados (PostgreSQL)
+  datasource:
+    url: jdbc:postgresql://localhost:5432/useradm  # Nome do serviço no Docker é 'postgres'
+    username: useradm  # Nome de usuário configurado no Docker
+    password: useradm  # Senha configurada no Docker
+    driver-class-name: org.postgresql.Driver
+    dialect: org.hibernate.dialect.PostgreSQLDialect
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Valida se o modelo está consistente com o banco de dados
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Configuração do Liquibase
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.xml  # Localização do arquivo de changelog
+
+  # Configuração de segurança (OAuth2 e JWT)
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          # Caminho da chave pública para validação do JWT
+          public-key-location: classpath:certs/public_key.pem  # Certifique-se de que o nome do arquivo está correto
+          # Emissor do token - usado para validação do JWT (se aplicável)
+          issuer-uri: http://localhost:8080  # Este é o issuer do token JWT. Ajuste conforme sua necessidade.
+
+security:
+  jwt:
+    expiration: 3600 # Ou o valor que você deseja geralmente em segundos
+    issuer: "codigoalvo.useradm-app"
+    secret: "codigoalvo2025useradmapp"
+
+server:
+  # Configuração da porta do servidor
+  port: 8080  # Ou qualquer outra porta de sua preferência
+
+logging:
+  # Níveis de log para depuração
+  level:
+    org.springframework: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.security: TRACE
+    org.springframework.web: DEBUG
